@@ -9,6 +9,7 @@ const App = () => {
   const [visibility, setVisibility] = useState<Visibility | ''>('');
   const [weather, setWeather] = useState<Weather | ''>('');
   const [comment, setComment] = useState(''); // State for managing the comment input
+  const [error, setError] = useState(''); // State for managing the comment input
 
   // Fetch diary entries from the API on component mount
   useEffect(() => {
@@ -26,6 +27,7 @@ const App = () => {
     // Validate form inputs
     if (!date || !visibility || !weather) {
       console.error('All fields are required');
+      setError('All fields are required');
       return;
     }
 
@@ -42,6 +44,7 @@ const App = () => {
       setDiaries(prev => [...prev, { ...res, id: Math.random() }]); // Mock ID generation, replace with actual response from createDiary if applicable
     } catch (error) {
       console.error('Failed to save the diary entry', error);
+      setError('Failed to save the diary entry');
     }
 
     // Reset form fields after submission
@@ -49,6 +52,7 @@ const App = () => {
     setVisibility('');
     setWeather('');
     setComment(''); // Reset the comment field
+    setError('');
   };
 
   return (
@@ -63,6 +67,7 @@ const App = () => {
         </div>
       ))}
       {/* Form for adding new diary entries */}
+      {error}
       <form onSubmit={handleSubmit}>
         <div>
           <label htmlFor='date'>Date:</label>
@@ -92,6 +97,7 @@ const App = () => {
             value={weather}
             onChange={e => setWeather(e.target.value)}
           >
+            <option value=''>Select weather</option>
             {Object.entries(Weather).map(([key, value]) => (
               <option key={`${key}`} value={`${value}`}>{`${key}`}</option>
             ))}
